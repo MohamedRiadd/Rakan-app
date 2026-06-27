@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>معهد ركان — إشعارات الواتساب</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
+  :root {
+    --bg:#0f1117;--surface:#1a1d27;--card:#20243a;--border:#2e3250;
+    --green:#00c896;--green-dim:#00c89620;--orange:#ff9f43;--orange-dim:#ff9f4320;
+    --red:#ff5e7a;--red-dim:#ff5e7a20;--text:#e8eaf6;--muted:#7b82a8;
+    --accent:#6c63ff;--accent-dim:#6c63ff18;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+  header{background:var(--surface);border-bottom:1px solid var(--border);padding:18px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .logo{display:flex;align-items:center;gap:12px;}
+  .logo-icon{width:42px;height:42px;background:linear-gradient(135deg,var(--accent),#9c63ff);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;}
+  .logo-text h1{font-size:16px;font-weight:800;}
+  .logo-text p{font-size:12px;color:var(--muted);}
+  .header-stats{display:flex;gap:12px;}
+  .stat-pill{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12px;display:flex;align-items:center;gap:6px;}
+  main{max-width:900px;margin:0 auto;padding:28px 20px;}
+  .config-panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:24px;}
+  .config-panel h3{font-size:14px;color:var(--muted);margin-bottom:12px;}
+  .config-row{display:flex;gap:10px;flex-wrap:wrap;}
+  .config-input{flex:1;min-width:200px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:13px;direction:ltr;}
+  .config-input:focus{outline:none;border-color:var(--accent);}
+  .btn-load{background:var(--accent);color:white;border:none;padding:10px 20px;border-radius:8px;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
+  .filter-bar{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+  .filter-btn{padding:8px 18px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-family:'Tajawal',sans-serif;font-size:13px;cursor:pointer;transition:all .2s;}
+  .filter-btn.active{background:var(--accent-dim);border-color:var(--accent);color:var(--text);}
+  .filter-btn.paid.active{background:var(--green-dim);border-color:var(--green);}
+  .filter-btn.partial.active{background:var(--orange-dim);border-color:var(--orange);}
+  .filter-btn.unpaid.active{background:var(--red-dim);border-color:var(--red);}
+  .send-all-bar{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;}
+  .send-all-bar span{font-size:13px;color:var(--muted);}
+  .send-all-bar strong{color:var(--text);}
+  .btn-send-all{background:linear-gradient(135deg,#25d366,#128c7e);color:white;border:none;padding:10px 22px;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;}
+  .students-grid{display:flex;flex-direction:column;gap:12px;}
+  .student-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px 20px;transition:border-color .2s;}
+  .student-card:hover{border-color:var(--accent);}
+  .student-card.paid{border-right:3px solid var(--green);}
+  .student-card.partial{border-right:3px solid var(--orange);}
+  .student-card.unpaid{border-right:3px solid var(--red);}
+  .card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;}
+  .student-info h3{font-size:16px;font-weight:700;margin-bottom:3px;}
+  .student-info p{font-size:12px;color:var(--muted);}
+  .status-badge{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;}
+  .badge-paid{background:var(--green-dim);color:var(--green);border:1px solid var(--green);}
+  .badge-partial{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange);}
+  .badge-unpaid{background:var(--red-dim);color:var(--red);border:1px solid var(--red);}
+  .payment-row{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+  .payment-bar-wrap{flex:1;height:6px;background:var(--border);border-radius:4px;overflow:hidden;}
+  .payment-bar-fill{height:100%;border-radius:4px;}
+  .fill-paid{background:var(--green);}
+  .fill-partial{background:var(--orange);}
+  .fill-unpaid{background:var(--red);width:2%;}
+  .payment-nums{display:flex;gap:16px;font-size:12px;}
+  .num-item{display:flex;flex-direction:column;align-items:center;gap:2px;}
+  .num-item span:first-child{color:var(--muted);font-size:11px;}
+  .num-item span:last-child{font-weight:700;font-size:14px;}
+  .message-preview{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:14px;}
+  .btn-send{width:100%;padding:12px;border-radius:10px;border:none;background:linear-gradient(135deg,#25d366,#128c7e);color:white;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;}
+  .btn-send.no-phone{background:var(--surface);color:var(--muted);border:1px solid var(--border);cursor:not-allowed;}
+  .btn-send.sent{background:var(--surface);color:var(--muted);border:1px solid var(--border);cursor:default;}
+  .loading{text-align:center;padding:80px 20px;color:var(--muted);}
+  .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .empty{text-align:center;padding:60px 20px;color:var(--muted);}
+  .empty h3{font-size:18px;margin-bottom:8px;color:var(--text);}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--green);color:#000;padding:12px 24px;border-radius:30px;font-weight:700;font-size:14px;transition:transform .3s;z-index:999;}
+  .toast.show{transform:translateX(-50%) translateY(0);}
+  @media(max-width:600px){header{padding:14px 16px;}.header-stats{display:none;}main{padding:16px 12px;}.card-top{flex-direction:column;gap:8px;}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <div class="logo-icon">🎓</div>
+    <div class="logo-text">
+      <h1>معهد ركان للتميز</h1>
+      <p>نظام إشعارات الواتساب</p>
+    </div>
+  </div>
+  <div class="header-stats" id="headerStats"></div>
+</header>
+
+<main>
+  <div class="config-panel">
+    <h3>⚙️ أدخل مفتاح Airtable API لتحميل بيانات الطلاب</h3>
+    <div class="config-row">
+      <input class="config-input" id="apiKey" type="password" placeholder="مفتاح API (يبدأ بـ pat...)" />
+      <button class="btn-load" onclick="loadStudents()">📥 تحميل الطلاب</button>
+    </div>
+  </div>
+
+  <div class="filter-bar" id="filterBar" style="display:none">
+    <button class="filter-btn active" onclick="filterStudents('all',this)">الكل</button>
+    <button class="filter-btn unpaid" onclick="filterStudents('Unpaid',this)">🔴 لم يدفع</button>
+    <button class="filter-btn partial" onclick="filterStudents('Partial',this)">🟠 دفع جزئي</button>
+    <button class="filter-btn paid" onclick="filterStudents('Paid',this)">✅ مكتمل</button>
+  </div>
+
+  <div class="send-all-bar" id="sendAllBar" style="display:none">
+    <span>إرسال لـ <strong id="visibleCount">0</strong> طالب</span>
+    <button class="btn-send-all" onclick="sendAll()">📲 إرسال للجميع</button>
+  </div>
+
+  <div id="container">
+    <div class="loading">
+      <div style="font-size:48px;margin-bottom:16px">📱</div>
+      <p>أدخل مفتاح API لتحميل بيانات الطلاب</p>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const BASE_ID='appicD2L5yULheKM2';
+const TABLE_ID='tblOqGnOarEhxEoze';
+const F={
+  name:'fldrz2y95Fde2863C',parent:'fldk8HGl2Xdkp4KaO',phone:'fldINqCKFVa60hOjC',
+  total:'fldgWMIgvrmT127FV',paid:'fldJJiRLummVMsXhv',remain:'fldyyKyY5GBhYwsyr',
+  status:'fldfNL7esHfpqsKST',msgText:'fldd6gqCEkubWSIdA',lastSent:'fldsSpjf85Gp11JJL'
+};
+let allStudents=[];let currentFilter='all';
+
+async function loadStudents(){
+  const key=document.getElementById('apiKey').value.trim();
+  if(!key){alert('الرجاء إدخال مفتاح Airtable API');return;}
+  document.getElementById('container').innerHTML='<div class="loading"><div class="spinner"></div><p>جاري تحميل البيانات...</p></div>';
+  try{
+    const res=await fetch(`https://api.airtable.com/v0/${BASE_ID}/${TABLE_ID}?pageSize=100`,{headers:{Authorization:`Bearer ${key}`}});
+    const data=await res.json();
+    if(!res.ok)throw new Error(data.error?.message||'خطأ في الاتصال');
+    allStudents=data.records.map(r=>{
+      const c=r.cellValuesByFieldId||{};const f=r.fields||{};
+      return{
+        id:r.id,
+        name:c[F.name]||f[F.name]||'—',
+        parent:c[F.parent]||f[F.parent]||'',
+        phone:c[F.phone]||f[F.phone]||'',
+        total:c[F.total]||f[F.total]||0,
+        paid:c[F.paid]||f[F.paid]||0,
+        remain:c[F.remain]||f[F.remain]||0,
+        status:c[F.status]||f[F.status]||'Unpaid',
+        msgText:c[F.msgText]||f[F.msgText]||'',
+        lastSent:c[F.lastSent]||f[F.lastSent]||null,
+      };
+    });
+    document.getElementById('filterBar').style.display='flex';
+    document.getElementById('sendAllBar').style.display='flex';
+    updateStats();renderStudents();
+  }catch(e){
+    document.getElementById('container').innerHTML=`<div class="empty"><div style="font-size:48px">⚠️</div><h3>تعذر الاتصال</h3><p>${e.message}</p></div>`;
+  }
+}
+
+function updateStats(){
+  const p=allStudents.filter(s=>s.status==='Paid').length;
+  const pa=allStudents.filter(s=>s.status==='Partial').length;
+  const u=allStudents.filter(s=>s.status==='Unpaid').length;
+  document.getElementById('headerStats').innerHTML=`
+    <div class="stat-pill"><span style="color:var(--green)">✅</span>${p} مكتمل</div>
+    <div class="stat-pill"><span style="color:var(--orange)">🟠</span>${pa} جزئي</div>
+    <div class="stat-pill"><span style="color:var(--red)">🔴</span>${u} لم يدفع</div>`;
+}
+
+function filterStudents(f,btn){
+  currentFilter=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderStudents();
+}
+
+function getVisible(){return currentFilter==='all'?allStudents:allStudents.filter(s=>s.status===currentFilter);}
+
+function buildMsg(s){
+  if(s.status==='Paid')return`تم استلام رسوم الطالب ${s.name} بالكامل. نشكركم على التعاون. 🎓\nمعهد ركان للتميز`;
+  if(s.status==='Partial')return`تم تسجيل دفعة جزئية للطالب ${s.name}.\nالمتبقي: ${s.remain} د.ك\nيُرجى التواصل لإتمام السداد. 📌\nمعهد ركان للتميز`;
+  return`تذكير: لم يتم سداد رسوم الطالب ${s.name} حتى الآن.\nيُرجى التواصل معنا في أقرب وقت. 📞\nمعهد ركان للتميز`;
+}
+
+function renderStudents(){
+  const visible=getVisible();
+  document.getElementById('visibleCount').textContent=visible.length;
+  if(!visible.length){
+    document.getElementById('container').innerHTML='<div class="empty"><div style="font-size:48px">🎉</div><h3>لا يوجد طلاب في هذه الفئة</h3></div>';
+    return;
+  }
+  const stMap={
+    'Paid':{label:'مكتمل ✅',cls:'paid',badge:'badge-paid'},
+    'Partial':{label:'جزئي 🟠',cls:'partial',badge:'badge-partial'},
+    'Unpaid':{label:'لم يدفع 🔴',cls:'unpaid',badge:'badge-unpaid'},
+  };
+  const today=new Date().toISOString().split('T')[0];
+  document.getElementById('container').innerHTML=`<div class="students-grid">${visible.map(s=>{
+    const st=stMap[s.status]||stMap['Unpaid'];
+    const pct=s.total>0?Math.min(100,(s.paid/s.total)*100):0;
+    const phone=(s.phone||'').replace(/\D/g,'');
+    const msg=encodeURIComponent(s.msgText||buildMsg(s));
+    const waLink=phone?`https://wa.me/${phone}?text=${msg}`:'';
+    const sentToday=s.lastSent&&s.lastSent.startsWith(today);
+    return`<div class="student-card ${st.cls}">
+      <div class="card-top">
+        <div class="student-info">
+          <h3>${s.name}</h3>
+          <p>📞 ${s.phone||'لا يوجد رقم'}${s.parent?' · ولي الأمر: '+s.parent:''}</p>
+        </div>
+        <span class="status-badge ${st.badge}">${st.label}</span>
+      </div>
+      <div class="payment-row">
+        <div class="payment-bar-wrap"><div class="payment-bar-fill fill-${st.cls}" style="width:${pct}%"></div></div>
+        <div class="payment-nums">
+          <div class="num-item"><span>مدفوع</span><span style="color:var(--green)">${s.paid} KD</span></div>
+          <div class="num-item"><span>متبقي</span><span style="color:var(--red)">${s.remain} KD</span></div>
+          <div class="num-item"><span>الإجمالي</span><span>${s.total} KD</span></div>
+        </div>
+      </div>
+      <div class="message-preview">${(s.msgText||buildMsg(s)).replace(/\n/g,'<br>')}</div>
+      ${sentToday
+        ?`<button class="btn-send sent">✔ تم الإرسال اليوم</button>`
+        :waLink
+          ?`<a href="${waLink}" target="_blank" onclick="markSent('${s.id}')" style="text-decoration:none"><button class="btn-send">📲 إرسال عبر الواتساب</button></a>`
+          :`<button class="btn-send no-phone">⚠️ لا يوجد رقم واتساب</button>`
+      }
+    </div>`;
+  }).join('')}</div>`;
+}
+
+async function markSent(id){
+  const key=document.getElementById('apiKey').value.trim();
+  if(!key)return;
+  const today=new Date().toISOString().split('T')[0];
+  try{
+    await fetch(`https://api.airtable.com/v0/${BASE_ID}/${TABLE_ID}/${id}`,{
+      method:'PATCH',
+      headers:{Authorization:`Bearer ${key}`,'Content-Type':'application/json'},
+      body:JSON.stringify({fields:{[F.lastSent]:today}})
+    });
+    const s=allStudents.find(x=>x.id===id);
+    if(s)s.lastSent=today;
+    showToast('✅ تم تسجيل الإرسال');
+    setTimeout(renderStudents,1500);
+  }catch(e){}
+}
+
+function sendAll(){
+  const visible=getVisible().filter(s=>s.phone);
+  if(!visible.length){alert('لا يوجد طلاب برقم هاتف');return;}
+  let i=0;
+  function next(){
+    if(i>=visible.length){showToast(`✅ تم فتح ${visible.length} محادثة`);return;}
+    const s=visible[i++];
+    const phone=(s.phone||'').replace(/\D/g,'');
+    const msg=encodeURIComponent(s.msgText||buildMsg(s));
+    window.open(`https://wa.me/${phone}?text=${msg}`,'_blank');
+    markSent(s.id);
+    setTimeout(next,1500);
+  }
+  next();
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+document.getElementById('apiKey').addEventListener('keydown',e=>{if(e.key==='Enter')loadStudents();});
+</script>
+</body>
+</html>
